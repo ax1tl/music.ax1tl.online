@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ax1tl.music</title>
+    <link rel="icon" type="image/png" href="images/ico.ico"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:wght@100..900&family=Bytesized&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet" type="text/css" media="all">
+
+    <meta property="og:title" content="ax1tl.music" />
+    <meta name="theme-color" content="#ff4422" />
+</head>
+
+<body>
+    <div class="bg-blur" id="bg_blur"></div>
+
+    <div class="overlay">
+        <img src="images/texture 3.jpg" id="grain_texture">
+        <canvas id="noise_texture"></canvas>
+        <img src="images/overlay1.png" class="hud_overlay" id="ol1">
+        <img src="images/overlay2.png" class="hud_overlay" id="ol2">
+        <img src="images/overlay3.png" class="hud_overlay" id="ol3">
+        <img src="images/overlay4.png" class="hud_overlay" id="ol4">
+        <img src="images/overlay5.png" class="hud_overlay" id="ol5">
+        <img src="images/overlay6.png" class="hud_overlay" id="ol6">
+        <img src="images/overlay7.png" class="hud_overlay" id="ol7">
+    </div>
+
+    <div class="inwrap">
+        <h1>
+            ax1tl<a href="music.ax1tl.online" id="online_tag">.music</a>
+            <div id="tagline">go make music.</div>
+        </h1>
+
+        <div class="directory_parent">
+            <div class="side_1"></div>
+
+            <div class="directory_list" id="album_page">
+                <p class="sb_header"><a href="music.ax1tl.online">:music</a> / <span id="crumb">...</span></p>
+                <p class="status" id="status">loading...</p>
+
+                <div class="album_detail" id="album_detail" hidden>
+                    <img id="album_cover" class="album_cover" alt="">
+                    <div class="album_info">
+                        <h2 id="album_name"></h2>
+                        <div class="album_meta" id="album_meta"></div>
+
+                        <div class="player">
+                            <div class="now_playing" id="now_playing">&nbsp;</div>
+                            <audio id="audio" preload="metadata"></audio>
+
+                            <div class="transport">
+                                <button class="ctl" id="prev" aria-label="Previous track">&lt;</button>
+                                <button class="ctl playPause" id="playpause" aria-label="Play">.play</button>
+                                <button class="ctl" id="next" aria-label="Next track">&gt;</button>
+                                <span class="info time" id="time">0:00 / 0:00</span>
+                            </div>
+
+                            <input class="seek" id="seek" type="range" min="0" max="0" step="0.01" value="0" aria-label="Seek">
+
+                            <div class="volume">
+                                <span class="info">vol</span>
+                                <input id="vol" type="range" min="0" max="100" step="10" value="30" aria-label="Volume">
+                            </div>
+                        </div>
+
+                        <ol class="tracklist" id="tracklist"></ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side_2"></div>
+        </div>
+    </div>
+
+    <div id="version">built with love - v0.0.4</div>
+
+    <script src="site.js"></script>
+    <script>
+        const audio      = document.getElementById('audio');
+        const playPause  = document.getElementById('playpause');
+        const seekBar    = document.getElementById('seek');
+        const volumeBar  = document.getElementById('vol');
+        const timeLabel  = document.getElementById('time');
+        const list       = document.getElementById('tracklist');
+        const nowPlaying = document.getElementById('now_playing');
+        let tracks = [];
+        let current = -1;
+        let albumMeta = null;
+
+        function formatTime(s) {
+            if (!isFinite(s)) s = 0;
+            const m = Math.floor(s / 60);
+            const r = Math.floor(s % 60);
+            return m + ':' + (r < 10 ? '0' : '') + r;
+        }
+
+        function updateFill() {
+            const max = parseFloat(seekBar.max) || 0;
+            const pct = max ? (seekBar.value / max) * 100 : 0;
+            seekBar.style.setProperty('--fill', pct + '%');
+        }
+
+        function updateTime() {
+            seekBar.value = audio.currentTime;
+            updateFill();
+            timeLabel.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration);
+        }
+
+        function setTrack(i) {
+            current = i;
+            audio.src = tracks[i].file;
+            nowPlaying.textContent = String(i + 1).padStart(2, '0') + '. ' + tracks[i].title;
+            [...list.children].forEach((li, idx) => li.classList.toggle('active', idx === i));
+            seekBar.value = 0;
+            seekBar.max = 0;
+            updateFill();
+            timeLabel.textContent = '0:00 / 0:00';
+
+            if ('mediaSession' in navigator && albumMeta) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: tracks[i].title,
+                    artist: 'ax1tl',
+                    album: albumMeta.title,
+                    artwork: [{ src: albumMeta.cover }]
+                });
+            }
+        }
+
+        function playTrack(i) {
+            if (i < 0 || i >= tracks.length) return;
+            setTrack(i);
+            audio.play().catch(() => {});
+        }
+
+        function togglePlay() {
+            if (audio.paused) audio.play().catch(() => {});
+            else audio.pause();
+        }
+
+        function nextTrack() { if (current < tracks.length - 1) playTrack(current + 1); }
+        function prevTrack() {
+            // restart the track if a few seconds in, otherwise go back one
+            if (audio.currentTime > 3 || current <= 0) audio.currentTime = 0;
+            else playTrack(current - 1);
+        }
+
+        // --- player wiring ---
+        playPause.addEventListener('click', togglePlay);
+        document.getElementById('next').addEventListener('click', nextTrack);
+        document.getElementById('prev').addEventListener('click', prevTrack);
+
+        audio.addEventListener('play',  () => { playPause.textContent = ':pause'; playPause.setAttribute('aria-label', 'Pause'); });
+        audio.addEventListener('pause', () => { playPause.textContent = '.play';  playPause.setAttribute('aria-label', 'Play'); });
+        audio.addEventListener('loadedmetadata', () => { seekBar.max = audio.duration; updateTime(); });
+        audio.addEventListener('timeupdate', updateTime);
+        audio.addEventListener('ended', nextTrack);   // stops at the end of the album
+
+        seekBar.addEventListener('input', () => { audio.currentTime = seekBar.value; updateFill(); });
+
+        function updateVolume() {
+            audio.volume = volumeBar.value / 100;
+            volumeBar.style.setProperty('--fill', volumeBar.value + '%');
+        }
+        volumeBar.addEventListener('input', updateVolume);
+        updateVolume();
+
+        // space bar toggles play/pause (unless a control already has focus)
+        document.addEventListener('keydown', e => {
+            if (e.code === 'Space' && e.target === document.body) {
+                e.preventDefault();
+                togglePlay();
+            }
+        });
+
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setActionHandler('play', togglePlay);
+            navigator.mediaSession.setActionHandler('pause', togglePlay);
+            navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
+            navigator.mediaSession.setActionHandler('nexttrack', nextTrack);
+        }
+
+        // --- load the album ---
+        const albumId = new URLSearchParams(window.location.search).get('album');
+
+        loadAlbums().then(albums => {
+            const album = albums.find(a => a.id === albumId);
+            const status = document.getElementById('status');
+            if (!album) {
+                status.textContent = 'album not found.';
+                document.getElementById('crumb').textContent = '???';
+                return;
+            }
+
+            albumMeta = album;
+            status.hidden = true;
+            document.title = album.title + ' - ax1tl.music';
+            document.getElementById('crumb').textContent = album.title;
+            document.getElementById('album_name').textContent = album.title;
+            document.getElementById('bg_blur').style.backgroundImage = 'url("' + album.cover + '")';
+
+            const cover = document.getElementById('album_cover');
+            cover.src = album.cover;
+            cover.alt = album.title + ' cover art';
+
+            const meta = [];
+            if (album.year) meta.push(album.year);
+            meta.push(album.tracks.length + (album.tracks.length === 1 ? ' track' : ' tracks'));
+            document.getElementById('album_meta').textContent = meta.join(' | ');
+
+            tracks = album.tracks;
+            tracks.forEach((t, i) => {
+                const li = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.className = 'track';
+                btn.textContent = t.title;
+                btn.onclick = () => playTrack(i);
+                li.appendChild(btn);
+                list.appendChild(li);
+            });
+
+            setTrack(0);   // loaded and ready, not playing
+            document.getElementById('album_detail').hidden = false;
+        }).catch(err => {
+            document.getElementById('status').textContent = 'couldn\'t load album.';
+            console.error(err);
+        });
+    </script>
+</body>
+</html>

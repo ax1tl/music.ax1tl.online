@@ -1,0 +1,26 @@
+{
+  "albums": [
+    {
+      "id": "wywh",
+      "title": "wishyouwerehere",
+      "year": 2026,
+      "cover": "images/covers/wywh.png",
+      "tracks": [
+        { "title": "lay",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 01 lay.mp3" },
+        { "title": "pursuer", "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 02 pursuer.mp3" },
+        { "title": "i don't know why you're here",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 03 i don't know why you're here.mp3" },
+        { "title": "it's not too late",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 04 it's not too late.mp3" },
+        { "title": "voices of the divine",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 05 voices of the divine.mp3" },
+        { "title": "eu não quero ir",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 06 eu não quero ir.mp3" },
+        { "title": "end of it all",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 07 end of it all.mp3" },
+        { "title": "because we can",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 08 because we can.mp3" },
+        { "title": "found",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 09 found.mp3" },
+        { "title": "overgrown (feat. lilian)",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 10 overgrown (feat. lilian).mp3" },
+        { "title": "with no second thought",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 11 with no second thought.mp3" },
+        { "title": "birds for the sun",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 12 birds for the sun.mp3" },
+        { "title": "i am here",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 13 i am here.mp3" },
+        { "title": "fly, in every way possible",  "file": "audio/wishyouwerehere/ax1tl - wishyouwerehere - 14 fly, in every way possible.mp3" }
+      ]
+    }
+  ]
+}

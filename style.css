@@ -178,6 +178,7 @@ html:hover #ol6, html:hover #ol7, html:hover #ol1 {
     font-size: 1.5em;
     color: var(--sb_header);
     margin-bottom: 0em;
+    margin-left: 1em;
 }
 .sb_link{
     color: var(--sb_link) !important;
@@ -300,6 +301,266 @@ html:hover #ol6, html:hover #ol7, html:hover #ol1 {
     color: #fff3;
 }
 
+/* ======= ALBUM GRID (music.html) ======= */
+
+.status{
+    color: var(--tagline_text);
+    margin: 1em;
+}
+
+.album_grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
+    gap: 1.5em;
+    padding: 1em;
+}
+.album{
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+}
+.Cover{
+    padding: 0;
+    border: 1px solid #fff3;
+    background: #0006;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0px 0px 0px 0px #fff0;
+    transition: all 0.5s ease;
+}
+.Cover img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.Cover:hover,
+.Cover:focus-visible{
+    border-color: #fff5;
+    box-shadow: 0px 2px 0px #fff, 0px 4px 0px #fff3;
+    transform: translateY(-4px);
+    outline: none;
+    transition: all 0.25s ease;
+}
+.album_title{
+    text-align: center;
+}
+
+/* ======= ALBUM PAGE (album.html) ======= */
+
+/* blurred cover art behind everything */
+.bg-blur{
+    position: fixed;
+    top: -30px; left: -30px; right: -30px; bottom: -30px;
+    background-size: cover;
+    background-position: center;
+    filter: blur(16px) brightness(0.45);
+    transform: scale(1.15);
+    z-index: -1;
+}
+
+.album_detail{
+    display: grid;
+    grid-template-columns: minmax(10em, 1fr) 2fr;
+    gap: 2em;
+    padding: 1em;
+}
+.album_detail[hidden]{ display: none; }
+.album_cover{
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border: 1px solid #fff4;
+}
+.album_info h2{
+    margin: 0;
+}
+.album_meta{
+    color: var(--tagline_text);
+    margin-bottom: 1.5em;
+}
+
+/* ======= PLAYER ======= */
+
+.player{
+    border-top: 1px solid #fff3;
+    border-bottom: 1px solid #fff3;
+    padding: 1.2em 0;
+    margin-bottom: 1.2em;
+}
+.now_playing{
+    color: var(--red);
+    margin-bottom: 0.8em;
+}
+.info{
+    font-size: small;
+    color: #fff8;
+}
+
+.transport{
+    display: flex;
+    align-items: center;
+    gap: 1.2em;
+    margin-bottom: 1em;
+}
+.ctl{
+    font-family: inherit;
+    font-size: 1.1em;
+    color: var(--text);
+    background: #0000;
+    border: none;
+    border-left: solid 0px #fff0;
+    padding: 0.2em 0.5em;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+.ctl:hover,
+.ctl:focus-visible{
+    border-left: solid 4px #fff;
+    text-shadow: 0px 0px 10px #fff8;
+    outline: none;
+}
+.ctl:active{
+    border-left: solid 8px #fff;
+    transition: all 0.05s;
+}
+.playPause{
+    min-width: 5em;
+    text-align: left;
+    font-size: 1.4em;
+}
+.time{
+    margin-left: auto;
+}
+
+/* seek bar: thin line that fills as the track plays, grows on hover */
+.seek{
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    height: 8px;
+    margin: 0 0 1.2em;
+    cursor: pointer;
+
+    --fill: 0%;
+    background: linear-gradient(to right, #fff 0%, #fff var(--fill), #fff2 var(--fill), #fff2 100%);
+    box-shadow: #fff2 0px 0px 10px 0px;
+    transition: height 0.25s ease;
+}
+.seek:hover{
+    height: 14px;
+}
+.seek::-webkit-slider-runnable-track{
+    -webkit-appearance: none;
+    background: transparent;
+    height: 100%;
+    border: none;
+}
+.seek::-moz-range-track{
+    background: transparent;
+    height: 100%;
+    border: none;
+}
+.seek::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 0px;
+    height: 0px;
+    border: none;
+}
+.seek::-moz-range-thumb{
+    width: 0px;
+    height: 0px;
+    border: none;
+}
+
+/* volume: row of dots, one per step */
+.volume{
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+}
+#vol{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12em;
+    height: 12px;
+    background: transparent;
+    cursor: pointer;
+    filter: drop-shadow(0px 0px 2px #fff4);
+
+    --fill: 30%;
+}
+#vol::-webkit-slider-runnable-track,
+#vol::-moz-range-track{
+    height: 12px;
+    background: linear-gradient(to right,
+        #fff 0%, #fff var(--fill),
+        #fff3 var(--fill), #fff3 100%);
+    -webkit-mask-image: radial-gradient(circle, #000 45%, transparent 46%);
+    mask-image: radial-gradient(circle, #000 45%, transparent 46%);
+    -webkit-mask-size: 10% 100%;
+    mask-size: 10% 100%;
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+    border: none;
+}
+#vol::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 0px;
+    height: 12px;
+    border: none;
+}
+#vol::-moz-range-thumb{
+    width: 0px;
+    height: 12px;
+    border: none;
+}
+
+/* ======= TRACK LIST ======= */
+
+.tracklist{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: track;
+}
+.tracklist li{
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    margin-bottom: 0.4em;
+    counter-increment: track;
+}
+.tracklist li::before{
+    content: counter(track, decimal-leading-zero);   /* 01, 02 ... 10, 11 */
+    min-width: 2ch;
+    color: var(--tagline_text);
+}
+.track{
+    flex: 1;                 /* replaces width: calc(100% - 2.5em) */
+    text-align: left;
+    font-family: inherit;
+    font-size: 1em;
+    color: var(--text);
+    background: #0000;
+    border: 1px solid #fff1;
+    padding: 0.4em 0.8em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.track:hover{
+    background: var(--sb_link_hover);
+    border-color: #fff8;
+}
+.tracklist li.active .track{
+    color: var(--black);
+    background: var(--red);
+    border-color: var(--red);
+}
+
+
 
 @media (max-width: 1390px) {
     .parent {
@@ -338,6 +599,7 @@ html:hover #ol6, html:hover #ol7, html:hover #ol1 {
     #ol3{ filter: hue-rotate(180deg);} 
     */
 }
+
 
 @media (max-width: 930px) {
     :root{
@@ -420,5 +682,15 @@ html:hover #ol6, html:hover #ol7, html:hover #ol1 {
     #big:hover{
         width: 90%;
         transition: all 0.25s ease;
+    }
+
+    .album_detail{
+        grid-template-columns: 1fr;
+    }
+    .album_grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .seek{
+        height: 14px;   /* easier to grab on touch screens */
     }
 }
