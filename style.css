@@ -344,7 +344,11 @@ html:hover #ol6, html:hover #ol7, html:hover #ol1 {
     transition: all 0.25s ease;
 }
 .album_title{
+    color: #fffa !important;
     text-align: center;
+}
+.album_title:hover{
+    color: #223 !important;
 }
 
 /* ======= ALBUM PAGE (album.html) ======= */
